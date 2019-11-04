@@ -1,6 +1,6 @@
-# flutter_fun
+# wel_planner
 
-A new Flutter project.
+A new Flutter application.
 
 ## Getting Started
 
