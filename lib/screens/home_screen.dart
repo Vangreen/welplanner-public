@@ -20,6 +20,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   DateTime _selectedValue = DateTime.now();
 
+  //default group
+  //will be change
+  String group = 'E6C1S1';
+
   //To sluzy do dopasowania elementow do wyswietlacza telefonu
   //dzieki temu wyswietlane elementy beda rowne na kazdym telefonie
   Size screenSize(BuildContext context) {
@@ -36,9 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<List<Event>> fetchEvent() async {
     String formattedDate = DateFormat('yyyy-MM-dd').format(_selectedValue);
 
-    //default group
-    //will be change
-    String group = 'e6c1s1';
     //tbdeleted
     developer.log(formattedDate);
     var url =
@@ -123,8 +124,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     ListTile(
-                      title: Text(_groups[index].name),
-                    ),
+                        title: Text(_groups[index].name),
+                        onTap: () {
+                          setState(() {
+                            group = _groups[index].name.toString();
+                            fetchEvent().then((value) {
+                              setState(() {
+                                _events.clear();
+                                _events.addAll(value);
+                              });
+                            });
+                          });
+                        }),
                   ],
                 ),
               );
