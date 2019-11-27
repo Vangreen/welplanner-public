@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:wel_planner/model/event.dart';
+import 'package:wel_planner/model/group.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key, this.title}) : super(key: key);
@@ -30,21 +31,27 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<Event> _events = List<Event>();
+  List<Group> _groups = List<Group>();
 
   Future<List<Event>> fetchEvent() async {
     String formattedDate = DateFormat('yyyy-MM-dd').format(_selectedValue);
+
+    //default group
+    //will be change
+    String group = 'e6c1s1';
     //tbdeleted
     developer.log(formattedDate);
     var url =
-        'http://championships.ringo.org.pl/event/e6c1s1/$formattedDate.json';
+        'http://championships.ringo.org.pl/event/$group/$formattedDate.json';
     //tbdeleted
     developer.log(
-        'http://championships.ringo.org.pl/event/e6c1s1/$formattedDate.json');
+        'http://championships.ringo.org.pl/event/$group/$formattedDate.json');
 
     var response = await http.get(url);
+    //tbdeleted
+    developer.log('Event status code: ' + response.statusCode.toString());
 
     var events = List<Event>();
-
     if (response.statusCode == 200) {
       var eventJson = json.decode(response.body);
       for (var noteJson in eventJson) {
@@ -54,11 +61,47 @@ class _HomeScreenState extends State<HomeScreen> {
     return events;
   }
 
+  Future<List<Group>> fetchGroup() async {
+    var url = 'http://championships.ringo.org.pl/event/group_list.json';
+
+    var response = await http.get(url);
+
+    //tbdeleted
+    developer.log('Event status code: ' + response.statusCode.toString());
+
+    var groups = List<Group>();
+    if (response.statusCode == 200) {
+      var groupJson = json.decode(response.body);
+      for (var noteJson in groupJson) {
+        groups.add(Group.fromJson(noteJson));
+      }
+    }
+    return groups;
+  }
+
+//  void fetchGroup() async {
+//    var groupJson = await GroupAPI().getGroups();
+//    print(groupJson);
+//
+//    var groupMap = jsonDecode(groupJson);
+//    setState(() {
+//      _groups.addAll(groupMap);
+//      developer.log(_groups.toString());
+//      developer.log(_groups.length.toString());
+//
+//    });
+//  }
+
   @override
   void initState() {
     fetchEvent().then((value) {
       setState(() {
         _events.addAll(value);
+      });
+    });
+    fetchGroup().then((value) {
+      setState(() {
+        _groups.addAll(value);
       });
     });
     super.initState();
@@ -73,16 +116,32 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: SizedBox(
         width: screenSize(context).width / 2.2,
         child: Drawer(
-          child: ListView(
-            children: <Widget>[
-              ListTile(
-                title: Text("E6C1S1"),
-              ),
-              ListTile(
-                title: Text("E6T1S1"),
-              ),
-            ],
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              return Card(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    ListTile(
+                      title: Text(_groups[index].name),
+                    ),
+                  ],
+                ),
+              );
+            },
+            itemCount: _groups.length,
           ),
+//          child: ListView(
+//            children: <Widget>[
+//              ListTile(
+//                title: Text("E6C1S1"),
+//              ),
+//              ListTile(
+//                title: Text("E6T1S1"),
+//              ),
+//            ],
+//
+//          ),
         ),
       ),
       body: ListView.builder(
