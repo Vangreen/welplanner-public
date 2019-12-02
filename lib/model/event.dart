@@ -18,6 +18,7 @@ class Event {
   String timeNotification;
   String timeStart;
   int roomId;
+  String color;
   String teacherId;
 
   Event(
@@ -40,6 +41,7 @@ class Event {
         this.timeNotification,
         this.timeStart,
         this.roomId,
+        this.color,
         this.teacherId});
 
   Event.fromJson(Map<String, dynamic> json) {
@@ -62,6 +64,7 @@ class Event {
     timeNotification = json['timeNotification'];
     timeStart = json['timeStart'];
     roomId = json['roomId'];
+    color = json['color'];
     teacherId = json['teacherId'];
   }
 
@@ -86,6 +89,7 @@ class Event {
     data['timeNotification'] = this.timeNotification;
     data['timeStart'] = this.timeStart;
     data['roomId'] = this.roomId;
+    data['color'] = this.color;
     data['teacherId'] = this.teacherId;
     return data;
   }
