@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     var events = List<Event>();
     if (response.statusCode == 200) {
-      var eventJson = json.decode(response.body);
+      var eventJson = json.decode(utf8.decode(response.bodyBytes));
       for (var noteJson in eventJson) {
         events.add(Event.fromJson(noteJson));
       }
@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     var groups = List<Group>();
     if (response.statusCode == 200) {
-      var groupJson = json.decode(response.body);
+      var groupJson = json.decode(utf8.decode(response.bodyBytes));
       for (var noteJson in groupJson) {
         groups.add(Group.fromJson(noteJson));
       }
