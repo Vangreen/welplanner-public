@@ -20,7 +20,6 @@ class Event {
   int roomId;
   String color;
   String teacherId;
-
   Event(
       {this.id,
         this.currentSemester,
