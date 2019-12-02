@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:swipedetector/swipedetector.dart';
+import 'package:wel_planner/backend/indexToTimeConverter.dart';
 import 'package:wel_planner/model/event.dart';
 import 'package:wel_planner/model/group.dart';
 
@@ -159,25 +160,45 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SwipeDetector(
         child: ListView.builder(
           itemBuilder: (context, index) {
-            return Card(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 32.0, bottom: 32.0, left: 16.0, right: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      _events[index].lessonName,
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      _events[index].location,
-                      style: TextStyle(color: Colors.grey.shade600),
-                    ),
-                  ],
+            return Stack(
+              children: [
+                Container(
+                  alignment: AlignmentDirectional(0.0, 0.0),
+                  width: screenSize(context).width * 0.11,
+                  height: 115,
+                  child: Text(
+                    indexToTimeConverter(_events[index].id),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
+                Container(
+                  width: screenSize(context).width,
+                  height: 115,
+                  margin: new EdgeInsets.only(
+                    left: screenSize(context).width * 0.11,
+                  ),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          top: 32.0, bottom: 32.0, left: 16.0, right: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            _events[index].lessonName,
+                            style: TextStyle(
+                                fontSize: 22, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            _events[index].location,
+                            style: TextStyle(color: Colors.grey.shade600),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             );
           },
           itemCount: _events.length,
