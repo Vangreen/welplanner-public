@@ -5,6 +5,7 @@ import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:swipedetector/swipedetector.dart';
 import 'package:wel_planner/model/event.dart';
 import 'package:wel_planner/model/group.dart';
 
@@ -155,29 +156,63 @@ class _HomeScreenState extends State<HomeScreen> {
 //          ),
         ),
       ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          return Card(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 32.0, bottom: 32.0, left: 16.0, right: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    _events[index].lessonName,
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    _events[index].location,
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
-                ],
+      body: SwipeDetector(
+        child: ListView.builder(
+          itemBuilder: (context, index) {
+            return Card(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 32.0, bottom: 32.0, left: 16.0, right: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      _events[index].lessonName,
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      _events[index].location,
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
+            );
+          },
+          itemCount: _events.length,
+        ),
+        onSwipeLeft: () {
+          developer.log('swype left');
+          setState(() {
+            _selectedValue = _selectedValue.add(new Duration(days: 1));
+            fetchEvent().then((value) {
+              setState(() {
+                _events.clear();
+                _events.addAll(value);
+              });
+            });
+          });
         },
-        itemCount: _events.length,
+        onSwipeRight: () {
+          developer.log('swype left');
+          setState(() {
+            _selectedValue = _selectedValue.subtract(new Duration(days: 1));
+            fetchEvent().then((value) {
+              setState(() {
+                _events.clear();
+                _events.addAll(value);
+              });
+            });
+          });
+        },
+        swipeConfiguration: SwipeConfiguration(
+            verticalSwipeMinVelocity: 100.0,
+            verticalSwipeMinDisplacement: 50.0,
+            verticalSwipeMaxWidthThreshold: 100.0,
+            horizontalSwipeMaxHeightThreshold: 50.0,
+            horizontalSwipeMinDisplacement: 50.0,
+            horizontalSwipeMinVelocity: 200.0),
       ),
       bottomNavigationBar: BottomAppBar(
         child: DatePickerTimeline(
