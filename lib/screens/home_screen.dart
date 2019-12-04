@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:swipedetector/swipedetector.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:wel_planner/backend/indexToTimeConverter.dart';
 import 'package:wel_planner/model/event.dart';
 import 'package:wel_planner/model/group.dart';
 import 'package:wel_planner/widgets/modal_lessonInfo.dart';
-import 'package:wel_planner/widgets/modal_calendar.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key, this.title}) : super(key: key);
@@ -23,8 +23,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   ModalLessonInfo modalLessonInfo = new ModalLessonInfo();
-  ModalCalendar modalCalendar = new ModalCalendar();
-
+  CalendarController _calendarController;
   DateTime _selectedValue = DateTime.now();
 
   //default group
@@ -92,19 +91,46 @@ class _HomeScreenState extends State<HomeScreen> {
     return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
   }
 
-//  void fetchGroup() async {
-//    var groupJson = await GroupAPI().getGroups();
-//    print(groupJson);
-//
-//    var groupMap = jsonDecode(groupJson);
-//    setState(() {
-//      _groups.addAll(groupMap);
-//      developer.log(_groups.toString());
-//      developer.log(_groups.length.toString());
-//
-//    });
-//  }
+  modalCalendar(BuildContext context, DateTime startDate) {
+    _calendarController = CalendarController();
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return TableCalendar(
+            calendarController: _calendarController,
+            startingDayOfWeek: StartingDayOfWeek.monday,
+            initialSelectedDay: startDate,
+            calendarStyle: CalendarStyle(
+              selectedColor: Colors.blue,
+              todayColor: Colors.blue[200],
+              markersColor: Colors.brown[700],
+              outsideDaysVisible: false,
+            ),
+            headerStyle: HeaderStyle(
+              formatButtonTextStyle:
+                  TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
+              formatButtonDecoration: BoxDecoration(
+                color: Colors.blue[400],
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+            ),
+            onDaySelected: onDaySelected,
+          );
+        });
+  }
 
+  //This function is responsible for change listview when click date in calendar modal
+  void onDaySelected(DateTime day, List events) {
+    setState(() {
+      _selectedValue = day;
+      fetchEvent().then((value) {
+        setState(() {
+          _events.clear();
+          _events.addAll(value);
+        });
+      });
+    });
+  }
 
   @override
   void initState() {
@@ -124,18 +150,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-          actions: <Widget>[
-      // action button
-      IconButton(
-      icon: Icon(Icons.calendar_today),
-      onPressed: () {
-          modalCalendar.mainBottomSheet(context);
-      },
-    ),
-    ]
-      ),
+      appBar: AppBar(title: Text(widget.title), actions: <Widget>[
+        // action button
+        IconButton(
+          icon: Icon(Icons.calendar_today),
+          onPressed: () {
+            modalCalendar(context, _selectedValue);
+          },
+        ),
+      ]),
       drawer: SizedBox(
         width: screenSize(context).width / 2.2,
         child: Drawer(
@@ -164,17 +187,6 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             itemCount: _groups.length,
           ),
-//          child: ListView(
-//            children: <Widget>[
-//              ListTile(
-//                title: Text("E6C1S1"),
-//              ),
-//              ListTile(
-//                title: Text("E6T1S1"),
-//              ),
-//            ],
-//
-//          ),
         ),
       ),
       body: SwipeDetector(
