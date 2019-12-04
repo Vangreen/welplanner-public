@@ -9,6 +9,7 @@ import 'package:swipedetector/swipedetector.dart';
 import 'package:wel_planner/backend/indexToTimeConverter.dart';
 import 'package:wel_planner/model/event.dart';
 import 'package:wel_planner/model/group.dart';
+import 'package:wel_planner/screens/modal.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key, this.title}) : super(key: key);
@@ -20,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Modal modal = new Modal();
   DateTime _selectedValue = DateTime.now();
 
   //default group
@@ -81,7 +83,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     return groups;
   }
-
 
   //This convert String hex (like on plany.wel) to Dart Color
   Color hexToColor(String code) {
@@ -187,34 +188,52 @@ class _HomeScreenState extends State<HomeScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
                     ),
-                    child: ClipPath(
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border(
-                                left: BorderSide(
-                                      color: hexToColor(_events[index].color), width: screenSize(context).width * 0.20))),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 32.0,  left: 16.0, right: 16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                _events[index].lessonName,
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                _events[index].location,
-                                style: TextStyle(color: Colors.grey.shade600),
-                              ),
-                            ],
+                    child: InkWell(
+                      onTap: () {
+                        // This if check if card have lesson now
+                        //if not do nothing
+                        //if yes show modal
+                        if (_events[index].lessonName.isEmpty) {
+                          //do Nothing
+                        } else {
+                          modal.mainBottomSheet(
+                              context,
+                              _events[index].lessonName,
+                              _events[index].location);
+                        }
+                      },
+                      child: ClipPath(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  left: BorderSide(
+                                      color: hexToColor(_events[index].color),
+                                      width:
+                                          screenSize(context).width * 0.20))),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 32.0, left: 16.0, right: 16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  _events[index].lessonName,
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  _events[index].location,
+                                  style: TextStyle(color: Colors.grey.shade600),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
+                        clipper: ShapeBorderClipper(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15))),
                       ),
-                      clipper: ShapeBorderClipper(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15))),
                     ),
                   ),
                 ),
