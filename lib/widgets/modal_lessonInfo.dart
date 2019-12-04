@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Modal {
+class ModalLessonInfo {
   mainBottomSheet(BuildContext context, String lessonName, String location) {
     showModalBottomSheet(
         context: context,

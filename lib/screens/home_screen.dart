@@ -9,7 +9,8 @@ import 'package:swipedetector/swipedetector.dart';
 import 'package:wel_planner/backend/indexToTimeConverter.dart';
 import 'package:wel_planner/model/event.dart';
 import 'package:wel_planner/model/group.dart';
-import 'package:wel_planner/screens/modal.dart';
+import 'package:wel_planner/widgets/modal_lessonInfo.dart';
+import 'package:wel_planner/widgets/modal_calendar.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key, this.title}) : super(key: key);
@@ -21,7 +22,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Modal modal = new Modal();
+  ModalLessonInfo modalLessonInfo = new ModalLessonInfo();
+  ModalCalendar modalCalendar = new ModalCalendar();
+
   DateTime _selectedValue = DateTime.now();
 
   //default group
@@ -102,6 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
 //    });
 //  }
 
+
   @override
   void initState() {
     fetchEvent().then((value) {
@@ -122,6 +126,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+          actions: <Widget>[
+      // action button
+      IconButton(
+      icon: Icon(Icons.calendar_today),
+      onPressed: () {
+          modalCalendar.mainBottomSheet(context);
+      },
+    ),
+    ]
       ),
       drawer: SizedBox(
         width: screenSize(context).width / 2.2,
@@ -196,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         if (_events[index].lessonName.isEmpty) {
                           //do Nothing
                         } else {
-                          modal.mainBottomSheet(
+                          modalLessonInfo.mainBottomSheet(
                               context,
                               _events[index].lessonName,
                               _events[index].location);
