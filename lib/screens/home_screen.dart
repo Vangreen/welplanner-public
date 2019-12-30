@@ -190,90 +190,101 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: SwipeDetector(
-        child: ListView.builder(
-          itemBuilder: (context, index) {
-            return Stack(
-              children: [
-                Container(
-                  alignment: AlignmentDirectional(0.0, 0.0),
-                  width: screenSize(context).width * 0.11,
-                  height: 100,
-                  child: Text(
-                    indexToTimeConverter(_events[index].id),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Container(
-                  width: screenSize(context).width,
-                  height: 100,
-                  margin: new EdgeInsets.only(
-                    left: screenSize(context).width * 0.11,
-                  ),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        // This if check if card have lesson now
-                        //if not do nothing
-                        //if yes show modal
-                        if (_events[index].lessonName.isEmpty) {
-                          //do Nothing
-                        } else {
-                          modalLessonInfo.mainBottomSheet(
-                              context,
-                              _events[index].lessonName,
-                              _events[index].location,
-                              _events[index].teacherId);
-                        }
-                      },
-                      child: ClipPath(
-                        child: Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  left: BorderSide(
-                                      color: hexToColor(_events[index].color),
-                                      width:
-                                          screenSize(context).width * 0.20))),
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 32.0, left: 16.0, right: 16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  _events[index].lessonName,
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
+        child: _events.isEmpty
+            ? SizedBox(
+                width: screenSize(context).width,
+                height: screenSize(context).height,
+                child: const Card(
+                    child: Center(child: Text('Brak zajęć w danym dniu'))),
+              )
+            : ListView.builder(
+                itemBuilder: (context, index) {
+                  return Stack(
+                    children: [
+                      Container(
+                        alignment: AlignmentDirectional(0.0, 0.0),
+                        width: screenSize(context).width * 0.11,
+                        height: 100,
+                        child: Text(
+                          indexToTimeConverter(_events[index].id),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Container(
+                        width: screenSize(context).width,
+                        height: 100,
+                        margin: new EdgeInsets.only(
+                          left: screenSize(context).width * 0.11,
+                        ),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          child: InkWell(
+                            onTap: () {
+                              // This if check if card have lesson now
+                              //if not do nothing
+                              //if yes show modal
+                              if (_events[index].lessonName.isEmpty) {
+                                //do Nothing
+                              } else {
+                                modalLessonInfo.mainBottomSheet(
+                                    context,
+                                    _events[index].lessonName,
+                                    _events[index].location,
+                                    _events[index].teacherId);
+                              }
+                            },
+                            child: ClipPath(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        left: BorderSide(
+                                            color: hexToColor(
+                                                _events[index].color),
+                                            width: screenSize(context).width *
+                                                0.20))),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 32.0, left: 16.0, right: 16.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        _events[index].lessonName,
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        _events[index].location,
+                                        style: TextStyle(
+                                            color: Colors.grey.shade600),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                Text(
-                                  _events[index].location,
-                                  style: TextStyle(color: Colors.grey.shade600),
-                                ),
-                              ],
+                              ),
+                              clipper: ShapeBorderClipper(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15))),
                             ),
                           ),
                         ),
-                        clipper: ShapeBorderClipper(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15))),
                       ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-          itemCount: _events.length,
-        ),
+                    ],
+                  );
+                },
+                itemCount: _events.length,
+              ),
         onSwipeLeft: () {
           developer.log('swype left');
           setState(() {
             _selectedValue = _selectedValue.add(new Duration(days: 1));
             fetchEvent().then((value) {
               setState(() {
+                developer.log('lenght' + _events.isEmpty.toString());
                 _events.clear();
                 _events.addAll(value);
               });
@@ -286,6 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _selectedValue = _selectedValue.subtract(new Duration(days: 1));
             fetchEvent().then((value) {
               setState(() {
+                developer.log('lenght' + _events.isEmpty.toString());
                 _events.clear();
                 _events.addAll(value);
               });
