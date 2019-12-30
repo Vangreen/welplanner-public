@@ -224,7 +224,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           modalLessonInfo.mainBottomSheet(
                               context,
                               _events[index].lessonName,
-                              _events[index].location);
+                              _events[index].location,
+                              _events[index].teacherId);
                         }
                       },
                       child: ClipPath(

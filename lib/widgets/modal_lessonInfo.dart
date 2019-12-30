@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ModalLessonInfo {
-  mainBottomSheet(BuildContext context, String lessonName, String location) {
+  mainBottomSheet(BuildContext context, String lessonName, String location, String teacher) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -10,6 +10,7 @@ class ModalLessonInfo {
             children: <Widget>[
               _createTile(context, lessonName, Icons.info, null),
               _createTile(context, location, Icons.location_city, null),
+              _createTile(context, teacher, Icons.people, null),
             ],
           );
         });
