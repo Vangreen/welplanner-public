@@ -24,6 +24,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   ModalLessonInfo modalLessonInfo = new ModalLessonInfo();
   CalendarController _calendarController;
+  String dateTimeNow =
+      (new DateFormat.yMd().add_Hm().format(DateTime.now())).toString();
   DateTime _selectedValue = DateTime.now();
 
   //default group
@@ -150,15 +152,21 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title), actions: <Widget>[
-        // action button
-        IconButton(
-          icon: Icon(Icons.calendar_today),
-          onPressed: () {
-            modalCalendar(context, _selectedValue);
-          },
-        ),
-      ]),
+      appBar: AppBar(
+          centerTitle: true,
+          title: Text(widget.title),
+          bottom: PreferredSize(
+              child: Text(dateTimeNow, style: TextStyle(color: Colors.white)),
+              preferredSize: null),
+          actions: <Widget>[
+            // action button
+            IconButton(
+              icon: Icon(Icons.calendar_today),
+              onPressed: () {
+                modalCalendar(context, _selectedValue);
+              },
+            ),
+          ]),
       drawer: SizedBox(
         width: screenSize(context).width / 2.2,
         child: Drawer(
