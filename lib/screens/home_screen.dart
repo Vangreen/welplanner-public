@@ -51,10 +51,10 @@ class _HomeScreenState extends State<HomeScreen> {
     //tbdeleted
     developer.log(formattedDate);
     var url =
-        'http://championships.ringo.org.pl/event/$group/$formattedDate.json';
+        'https://hejtyandroid.eu/event/$group/$formattedDate.json';
     //tbdeleted
     developer.log(
-        'http://championships.ringo.org.pl/event/$group/$formattedDate.json');
+        'https://hejtyandroid.eu/event/$group/$formattedDate.json');
 
     var response = await http.get(url);
     //tbdeleted
@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<List<Group>> fetchGroup() async {
-    var url = 'http://championships.ringo.org.pl/event/group_list.json';
+    var url = 'https://hejtyandroid.eu/event/group_list.json';
 
     var response = await http.get(url);
 
