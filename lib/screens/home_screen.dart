@@ -34,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   //To sluzy do dopasowania elementow do wyswietlacza telefonu
   //dzieki temu wyswietlane elementy beda rowne na kazdym telefonie
+
   Size screenSize(BuildContext context) {
     return MediaQuery.of(context).size;
   }
@@ -51,10 +52,10 @@ class _HomeScreenState extends State<HomeScreen> {
     //tbdeleted
     developer.log(formattedDate);
     var url =
-        'http://championships.ringo.org.pl/event/$group/$formattedDate.json';
+        'https://hejtyandroid.eu/event/$group/$formattedDate.json';
     //tbdeleted
     developer.log(
-        'http://championships.ringo.org.pl/event/$group/$formattedDate.json');
+        'https://hejtyandroid.eu/event/$group/$formattedDate.json');
 
     var response = await http.get(url);
     //tbdeleted
@@ -71,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<List<Group>> fetchGroup() async {
-    var url = 'http://championships.ringo.org.pl/event/group_list.json';
+    var url = 'https://hejtyandroid.euevent/group_list.json';
 
     var response = await http.get(url);
 
@@ -209,6 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemBuilder: (context, index) {
                   return Stack(
                     children: [
+
                       Container(
                         alignment: AlignmentDirectional(0.0, 0.0),
                         width: screenSize(context).width * 0.11,
@@ -218,6 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           textAlign: TextAlign.center,
                         ),
                       ),
+
                       Container(
                         width: screenSize(context).width,
                         height: 100,
