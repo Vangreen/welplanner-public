@@ -260,6 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(
+                                        _events[index].lessonType +
                                         _events[index].lessonName,
                                         style: TextStyle(
                                             fontSize: 15,
